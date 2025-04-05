@@ -2,7 +2,7 @@ version: '3.9'
 
 services:        
   app:
-    hostname: app
+    image: adieos/netics-1
     container_name: penugasan-1-netics
     build:
       context: . 
