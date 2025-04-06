@@ -4,9 +4,6 @@ services:
   app:
     image: adieos/netics-1
     container_name: penugasan-1-netics
-    build:
-      context: . 
-      dockerfile: Dockerfile
     ports:
       - ${GOLANG_PORT}:8888
     restart: always
