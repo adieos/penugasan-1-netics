@@ -22,7 +22,9 @@ Bahasa pemrograman dan teknologi yang digunakan dibebaskan kepada peserta.
 
 # Langkah Pengerjaan
 
-1. Pertama, kita buat dulu API-nya. Disini, saya menggunakan Go sebagai bahasa pemrogramannya, dibantu dengan Gin sebagai frameworknya.
+## 1. Pertama, kita buat dulu API-nya
+
+Disini, saya menggunakan Go sebagai bahasa pemrogramannya, dibantu dengan Gin sebagai frameworknya.
 
 ![image](https://github.com/user-attachments/assets/81616116-17a0-42f6-b07b-a36329841461)
 
@@ -32,7 +34,7 @@ endpoint `/health` akan menampilkan data, sedangkan endpoint lainnya (alias 404)
 
 ![image](https://github.com/user-attachments/assets/29a05044-1428-470a-9113-1b0ab0e720ae)
 
-2. Setelah itu, kita buat Dockerfile dan docker-compose nya
+## 2. Setelah itu, kita buat Dockerfile dan docker-compose nya
 
 ![image](https://github.com/user-attachments/assets/6283d514-0cdd-4b11-a4a7-d016118cbd5f)
 
@@ -42,7 +44,7 @@ Di dalam Dockerfile, saya menggunakan `golang:alpine` sebagai base image karena 
 
 Kemudian di dalam docker-compose, saya buat 1 container saja yang berisi aplikasinya, dimana sumbernya diambil dari docker image yang telah dibuat dari Dockerfile di atas. Tak lupa port 8888 image di-forward ke port 8888 milik host.
 
-3. Build dan Push Docker Image-nya!
+## 3. Build dan Push Docker Image-nya!
 
 Karena Dockerfile sudah ada, kita bisa langsung membuat docker imagenya dengan:
 
@@ -66,7 +68,7 @@ docker push adieos/netics-`
 
 Untuk melihat apabila image sudah berhasil di-push, maka bisa membuka URL: [https://hub.docker.com/repository/docker/adieos/netics-1](https://hub.docker.com/repository/docker/adieos/netics-1)
 
-4. Setup di VPS
+## 4. Setup di VPS
 
 Langkah selanjutnya adalah melakukan setup di VPS. Saya melakukan SSH ke VPS kemudian melakukan setup sebagai superuser (biar enak aja sih). Lalu, buat folder untuk melakukan deployment API di dalam `/var/www`. Folder saya beri nama `penugasan-1-netics` dan kemudian diisi oleh docker-compose serta `.env` sebagai environment variables yang diperlukan (simulasi saja).
 
@@ -99,7 +101,7 @@ Lalu cek apakah API bisa diakses dengan langsung melakukan request ke IP VPS: [h
 ![WhatsApp Image 2025-04-05 at 21 58 04_04c164ff](https://github.com/user-attachments/assets/6773b643-d389-4bea-8ad9-885722174f1e)
 
 
-5. Setup Domain
+## 5. Setup Domain
 
 API memang sudah bisa diakses, namun sangat tidak ideal apabila IP VPS langsung diekspos ke publik (dan hanya menggunakan HTTP!). Maka dari itu, karena kebetulan saya ada akses ke domain Schematics, saya juga mencoba membuat API seolah-olah akan digunakan oleh umum. Maka dari itu, API akan saya beri subdomain beserta sertifikat dari CA untuk mengimplementasikan HTTPS. Proses ini akan dibantu oleh `nginx` sebagai web server, `Certbot` sebagai pengurus sertifikat HTTPS dari Let's Encrypt, serta `Cloudflare` sebagai DNS Registrar.
 
@@ -132,10 +134,19 @@ Untuk mengecek apakah API bisa diakses, maka masukkan URL subdomain yang didafta
 
 ![WhatsApp Image 2025-04-05 at 22 11 12_c71bd3b0](https://github.com/user-attachments/assets/6da19024-f89f-42ad-88a6-256b180e5607)
 
-6. CI/CD Pipeline
+## 6. CI/CD Pipeline
 
-Karena sudah berhasil melakukan deployment, kita bisa lanjut ke langkah terakhir, yaitu membuat pipeline CI/CD untuk mengotomatisasi semuanya! Pertama, saya buat workflownya dahulu di `/.github/workflows`
+Karena sudah berhasil melakukan deployment, kita bisa lanjut ke langkah terakhir, yaitu membuat pipeline CI/CD untuk mengotomatisasi semuanya! Pertama, saya buat workflownya dahulu di `/.github/workflows`. Workflow saya beri nama `docker.yml` dan berisi 2 job: `build` dan `deploy`.
 
+![image](https://github.com/user-attachments/assets/e14328df-ab70-446b-a249-8dafbacd2ea7)
 
+Workflow akan di-trigger setiap kali ada push ke branch `main`. Untuk job pertama, saya menggunakan runner github untuk login ke akun saya di Dockerhub, meng-build image, dan push ke Dockerhub.
 
-NOTE: bisa disable url HTTP dengan hanya boleha kses ke lokalhost
+![image](https://github.com/user-attachments/assets/65367dc4-e01e-458b-b599-a8392cfd0542)
+
+Lalu untuk job kedua, saya melakukan SSH ke VPS, melakukan pull dari docker image yang sudah di-push oleh job pertama, dan melakukan restart container.
+Semua kredensial yang diperlukan disimpan di Github Secrets.
+
+## Penutup
+
+Selesai! Dengan begini, apapun perubahan yang terjadi akan otomatis ter-update karena adanya pipeline CI/CD. Hasil juga kemudian bisa dilihat di [http://103.189.235.187:8888/health](http://103.189.235.187:8888/health) atau [https://tugas-netics.schematics-its.com/health](https://tugas-netics.schematics-its.com/health). Namun, IP VPS masih ter-ekspose dan orang umum bisa langsung menembak ke API tersebut. Untuk mengamankan ini, kita bisa menutup akses ini dengan cara membuat aplikasi kita hanya menerima koneksi dari localhost saja (sekarang masih menerima koneksi dari manapun). Dengan cara ini, hanya request yang datang melalui `nginx` yang akan diterima, sementara upaya akses langsung ke API dari luar akan gagal.
