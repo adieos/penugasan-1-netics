@@ -16,9 +16,12 @@ Implementasikan modul CI/CD ini pada sebuah sistem server sederhana, dengan deta
 }
 ```
 Bahasa pemrograman dan teknologi yang digunakan dibebaskan kepada peserta.
-3. Lakukan deployment API tersebut dalam bentuk container (Docker Multi-stage) pada VPS publik.
-4. Lakukan proses CI/CD menggunakan GitHub Actions untuk melakukan otomasi proses deployment API. Terapkan juga best practices untuk menjaga kualitas environment CI/CD
-5. Dokumentasikan pengerjaan di sebuah laporan berbentuk Markdown pada repositori peserta masing-masing.
+
+2. Lakukan deployment API tersebut dalam bentuk container (Docker Multi-stage) pada VPS publik.
+
+3. Lakukan proses CI/CD menggunakan GitHub Actions untuk melakukan otomasi proses deployment API. Terapkan juga best practices untuk menjaga kualitas environment CI/CD
+
+4. Dokumentasikan pengerjaan di sebuah laporan berbentuk Markdown pada repositori peserta masing-masing.
 
 # Langkah Pengerjaan
 
