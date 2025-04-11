@@ -30,6 +30,8 @@ func main() {
 		})
 	})
 
+	envPentingJanganKeekspos := os.Getenv("ENV_PENTING")
+
 	server.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"nama":      "Athallah Rajendra Wibisono",
@@ -37,6 +39,7 @@ func main() {
 			"status":    "UP",
 			"timestamp": time.Now().Format(time.RFC3339),
 			"uptime":    time.Since(up_at).String(),
+			"env":       fmt.Sprintf("ini env jangan sampai ke publik: %v", envPentingJanganKeekspos),
 		})
 	})
 
